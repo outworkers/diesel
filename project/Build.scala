@@ -139,7 +139,7 @@ object PhantomBuild extends Build {
 
   lazy val diesel = Project(
     id = "diesel",
-    base = file(".")
+    base = file("."),
     settings = sharedSettings
   ).aggregate(
     dieselEngine
@@ -147,7 +147,7 @@ object PhantomBuild extends Build {
 
   lazy val dieselEngine = Project(
     id = "diesel-engine",
-    base = file("."),
+    base = file("engine"),
     settings = sharedSettings
   ).settings(
     libraryDependencies ++= Seq(
