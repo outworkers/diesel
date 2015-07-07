@@ -2,10 +2,6 @@ package com.websudos.diesel.engine.query.multiparts
 
 import com.websudos.diesel.engine.query.AbstractQuery
 
-class Parts {
-
-}
-
 sealed abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](val list: List[QT] = Nil) {
 
   def instance(l: List[QT]): T
@@ -15,9 +11,9 @@ sealed abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](
   def qb: QT
 
   def build(init: QT): QT = if (init.nonEmpty) {
-    qb.bpad.prepend init
+    qb.bpad.prepend(init)
   } else {
-    qb.prepend init
+    qb.prepend(init)
   }
 
   def append(q: QT): T = instance(list ::: (q :: Nil))
@@ -48,8 +44,8 @@ abstract class MergedQueryList[QT <: AbstractQuery](val list: List[QT]) {
    * @param init The initialisation query of the part merge.
    * @return A final, executable CQL query with all the parts merged.
    */
-  def build(init: AbstractQuery): AbstractQuery = if (list.exists(_.nonEmpty)) {
-    build.bpad prepend init
+  def build(init: AbstractQuery[_]): AbstractQuery[_] = if (list.exists(_.nonEmpty)) {
+    build.bpad.prepend(init)
   } else {
     init
   }

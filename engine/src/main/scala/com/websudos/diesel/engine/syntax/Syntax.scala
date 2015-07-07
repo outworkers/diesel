@@ -1,5 +1,28 @@
 package com.websudos.diesel.engine.syntax
 
-class Syntax {
+sealed abstract class Symbols {
+  val `*` = "*"
+  val `{` = "{"
+  val `}` = "}"
+  val `[` = "["
+  val `]` = "]"
 
+  val `.` = "."
+  val `:` = ":"
+  val `;` = ";"
+  val `(` = "("
+  val `)` = ")"
+  val `,` = ","
+  val `<` = "<"
+  val `>` = ">"
+  val `=` = "="
+  val + = "+"
+  val - = "-"
 }
+
+
+class Syntax {
+  object Symbols extends Symbols
+}
+
+object DefaultSyntax extends Syntax
