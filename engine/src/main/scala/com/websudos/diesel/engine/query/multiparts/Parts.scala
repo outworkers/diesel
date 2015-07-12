@@ -18,21 +18,25 @@ sealed abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](
 
   def append(q: QT): T = instance(list ::: (q :: Nil))
 
-  def merge[X <: QueryPart[X, QT]](part: X): MergedQueryList = {
+  def mergeList(list: List[QT]): MergedQueryList[QT]
+
+  def merge[X <: QueryPart[X, QT]](part: X): MergedQueryList[QT] = {
 
     val list = if (part.qb.nonEmpty) List(qb, part.qb) else List(qb)
 
-    new MergedQueryList(list)
+    mergeList(list)
   }
 }
 
-abstract class MergedQueryList[QT <: AbstractQuery](val list: List[QT]) {
+abstract class MergedQueryList[QT <: AbstractQuery[QT]](val list: List[QT]) {
 
   def this(query: QT) = this(List(query))
 
   def apply(list: List[QT]): MergedQueryList[QT]
 
-  def build: QT = AbstractQuery(list.map(_.queryString).mkString(" "))
+  def apply(str: String): QT
+
+  def build: QT = apply(list.map(_.queryString).mkString(" "))
 
   /**
    * This will build a merge list into a final executable query.
@@ -44,13 +48,13 @@ abstract class MergedQueryList[QT <: AbstractQuery](val list: List[QT]) {
    * @param init The initialisation query of the part merge.
    * @return A final, executable CQL query with all the parts merged.
    */
-  def build(init: AbstractQuery[_]): AbstractQuery[_] = if (list.exists(_.nonEmpty)) {
-    build.bpad.prepend(init)
+  def build(init: QT): QT = if (list.exists(_.nonEmpty)) {
+    build.bpad.prepend(init.queryString)
   } else {
     init
   }
 
-  def merge[X <: QueryPart[X, QT]](part: X, init: QT = AbstractQuery.empty): MergedQueryList = {
+  def merge[X <: QueryPart[X, QT]](part: X, init: QT): MergedQueryList[QT] = {
 
     val appendable = part build init
 
