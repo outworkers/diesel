@@ -151,6 +151,7 @@ object PhantomBuild extends Build {
     settings = sharedSettings
   ).settings(
     libraryDependencies ++= Seq(
+      "org.scala-lang"               %  "scala-reflect"                     % scalaVersion.value,
       "org.scalacheck"               %% "scalacheck"                        % "1.11.5"                        % "test, provided",
       "com.websudos"                 %% "util-testing"                      % UtilVersion                     % "test, provided",
       "com.storm-enroute"            %% "scalameter"                        % ScalaMeterVersion               % "test, provided"
