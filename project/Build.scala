@@ -32,23 +32,11 @@ import com.twitter.sbt._
 import sbt.Keys._
 import sbt._
 
-object PhantomBuild extends Build {
+object Build extends Build {
 
   val UtilVersion = "0.9.8"
-  val DatastaxDriverVersion = "2.1.5"
   val ScalaTestVersion = "2.2.4"
-  val ShapelessVersion = "2.2.0-RC4"
-  val FinagleVersion = "6.25.0"
-  val TwitterUtilVersion = "6.24.0"
-  val ScroogeVersion = "3.17.0"
-  val ScalatraVersion = "2.3.0"
-  val PlayVersion = "2.4.0-M1"
-  val Json4SVersion = "3.2.11"
   val ScalaMeterVersion = "0.6"
-  val CassandraUnitVersion = "2.1.3.2"
-  val SparkCassandraVersion = "1.2.0-alpha3"
-  val ThriftVersion = "0.5.0"
-  val PhantomSbtVersion = "1.9.3"
 
   val mavenPublishSettings : Seq[Def.Setting[_]] = Seq(
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
@@ -102,7 +90,7 @@ object PhantomBuild extends Build {
 
   val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
     organization := "com.websudos",
-    version := "1.9.11-SNAPSHOT",
+    version := "0.1.0-SNAPSHOT",
     scalaVersion := "2.11.6",
     crossScalaVersions := Seq("2.10.5", "2.11.6"),
     resolvers ++= Seq(
