@@ -1,13 +1,15 @@
 package com.websudos.diesel.engine.reflection
 
 import scala.collection.mutable.{ ArrayBuffer => MutableArrayBuffer }
-import scala.reflect.runtime.universe.Symbol
+import scala.reflect.runtime.universe.{ Symbol, TypeTag }
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 
 
 trait EarlyInit {
 
-  abstract type Initialized
+  type Initialized
+
+  implicit def tag: TypeTag[Initialized]
 
   protected[this] lazy val _collection: MutableArrayBuffer[Initialized] = new MutableArrayBuffer[Initialized]
 
