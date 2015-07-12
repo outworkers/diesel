@@ -1,15 +1,15 @@
 package com.websudos.diesel.engine.reflection
 
-import com.websudos.phantom.CassandraTable
-
 import scala.collection.mutable.{ ArrayBuffer => MutableArrayBuffer }
-import scala.reflect.runtime._
+import scala.reflect.runtime.universe.Symbol
+import scala.reflect.runtime.{currentMirror => cm, universe => ru}
+
 
 trait EarlyInit {
 
   abstract type Initialized
 
-  private[this] lazy val _columns: MutableArrayBuffer[Initialized] = new MutableArrayBuffer[Initialized]
+  protected[this] lazy val _collection: MutableArrayBuffer[Initialized] = new MutableArrayBuffer[Initialized]
 
   val instanceMirror = cm.reflect(this)
   val selfType = instanceMirror.symbol.toType
@@ -19,7 +19,7 @@ trait EarlyInit {
   selfType.baseClasses.reverse.foreach {
     baseClass =>
       val baseClassMembers = baseClass.typeSignature.members.sorted
-      val baseClassColumns = baseClassMembers.filter(_.typeSignature <:< ru.typeOf[Initialized[_, _]])
+      val baseClassColumns = baseClassMembers.filter(_.typeSignature <:< ru.typeOf[Initialized])
       baseClassColumns.foreach(symbol => if (!columnMembers.contains(symbol)) columnMembers += symbol)
   }
 
@@ -30,8 +30,6 @@ trait EarlyInit {
       } else {
         instanceMirror.reflectModule(symbol.asModule).symbol
       }
-      _tables += table.asInstanceOf[CassandraTable[_, _]]
+      _collection += table.asInstanceOf[Initialized]
   }
-}
-
 }
