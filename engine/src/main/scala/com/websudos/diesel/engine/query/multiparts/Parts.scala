@@ -2,7 +2,7 @@ package com.websudos.diesel.engine.query.multiparts
 
 import com.websudos.diesel.engine.query.AbstractQuery
 
-sealed abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](val list: List[QT] = Nil) {
+abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](val list: List[QT] = Nil) {
 
   def instance(l: List[QT]): T
 
@@ -54,7 +54,7 @@ abstract class MergedQueryList[QT <: AbstractQuery[QT]](val list: List[QT]) {
     init
   }
 
-  def merge[X <: QueryPart[X, QT]](part: X, init: QT): MergedQueryList[QT] = {
+  def merge[X <: QueryPart[X, QT]](part: X, init: QT = apply("")): MergedQueryList[QT] = {
 
     val appendable = part build init
 
