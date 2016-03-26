@@ -1,35 +1,35 @@
 package com.websudos.diesel.engine.reflection
 
-import scala.collection.mutable.{ ArrayBuffer => MutableArrayBuffer }
-import scala.reflect.runtime.universe.{ Symbol, TypeTag }
+import scala.collection.mutable.{ArrayBuffer => MutableArrayBuffer}
+import scala.reflect.runtime.universe.TypeTag
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 
+private object Lock
 
 trait EarlyInit[T] {
 
   protected[this] lazy val _collection: MutableArrayBuffer[T] = new MutableArrayBuffer[T]
 
-  def initialize()(implicit typeTag: TypeTag[T]) = {
-    val instanceMirror = cm.reflect(this)
-    val selfType = instanceMirror.symbol.toType
+  private[this] val instanceMirror = cm.reflect(this)
 
-    // Collect all column definitions starting from base class
-    val columnMembers = MutableArrayBuffer.empty[Symbol]
-    selfType.baseClasses.reverse.foreach {
-      baseClass =>
-        val baseClassMembers = baseClass.typeSignature.members.sorted
-        val baseClassColumns = baseClassMembers.filter(_.typeSignature <:< ru.typeOf[T])
-        baseClassColumns.foreach(symbol => if (!columnMembers.contains(symbol)) columnMembers += symbol)
-    }
+  def initialize()(implicit typeTag: TypeTag[T]): Seq[T] = {
+    Lock.synchronized {
+      val selfType = instanceMirror.symbol.toType
 
-    columnMembers.foreach {
-      symbol =>
-        val member =  if (symbol.isModule) {
+      val members: Seq[ru.Symbol] = (for {
+        baseClass <- selfType.baseClasses.reverse
+        symbol <- baseClass.typeSignature.members.sorted
+        if symbol.typeSignature <:< ru.typeOf[T]
+      } yield symbol)(collection.breakOut)
+
+      for {
+        symbol <- members.distinct
+        table = if (symbol.isModule) {
           instanceMirror.reflectModule(symbol.asModule).instance
-        } else {
-          instanceMirror.reflectModule(symbol.asModule).symbol
+        } else if (symbol.isTerm && symbol.asTerm.isVal) {
+          instanceMirror.reflectField(symbol.asTerm).get
         }
-        _collection += member.asInstanceOf[T]
+      } yield table.asInstanceOf[T]
     }
   }
 }
