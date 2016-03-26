@@ -18,6 +18,10 @@ abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](val lis
 
   def append(q: QT): T = instance(list ::: (q :: Nil))
 
+  def append(q: QT*): T = instance(q.toList ::: list)
+
+  def append(q: List[QT]): T = instance(q ::: list)
+
   def mergeList(list: List[QT]): MergedQueryList[QT]
 
   def merge[X <: QueryPart[X, QT]](part: X): MergedQueryList[QT] = {
