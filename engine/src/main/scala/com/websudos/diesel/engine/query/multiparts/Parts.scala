@@ -32,6 +32,7 @@ abstract class QueryPart[T <: QueryPart[T, QT], QT <: AbstractQuery[QT]](val lis
   }
 }
 
+
 abstract class MergedQueryList[QT <: AbstractQuery[QT]](val list: List[QT]) {
 
   def this(query: QT) = this(List(query))
