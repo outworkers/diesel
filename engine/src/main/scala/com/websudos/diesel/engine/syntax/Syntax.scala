@@ -20,7 +20,6 @@ sealed abstract class Symbols {
   val - = "-"
 }
 
-
 class Syntax {
   object Symbols extends Symbols
 }
