@@ -74,14 +74,14 @@ object Publishing {
     externalResolvers <<= resolvers map { rs =>
       Resolver.withDefaultResolvers(rs, mavenCentral = true)
     },
-    licenses += ("Outworkers License", url("https://github.com/outworkers/phantom/blob/develop/LICENSE.txt")),
+    licenses += ("Outworkers License", url("https://github.com/outworkers/diesel/blob/develop/LICENSE.txt")),
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => true },
     pomExtra :=
-      <url>https://github.com/outworkers/phantom</url>
+      <url>https://github.com/outworkers/diesel</url>
         <scm>
-          <url>git@github.com:outworkers/phantom.git</url>
-          <connection>scm:git:git@github.com:outworkers/phantom.git</connection>
+          <url>git@github.com:outworkers/diesel.git</url>
+          <connection>scm:git:git@github.com:outworkers/diesel.git</connection>
         </scm>
         <developers>
           <developer>
