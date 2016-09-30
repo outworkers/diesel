@@ -1,6 +1,6 @@
-package com.websudos.diesel.engine.query
+package com.outworkers.diesel.engine.query
 
-import com.websudos.diesel.engine.syntax.DefaultSyntax
+import com.outworkers.diesel.engine.syntax.DefaultSyntax._
 
 abstract class AbstractQuery[QT <: AbstractQuery[QT]](val queryString: String) {
 
@@ -43,9 +43,9 @@ abstract class AbstractQuery[QT <: AbstractQuery[QT]](val queryString: String) {
   def forcePad: QT = create(queryString + " ")
   def trim: QT = create(queryString.trim)
 
-  def wrapn(str: String): QT = append(DefaultSyntax.Symbols.`(`).append(str).append(DefaultSyntax.Symbols.`)`)
+  def wrapn(str: String): QT = append(Symbols.`(`).append(str).append(Symbols.`)`)
   def wrapn(query: QT): QT = wrapn(query.queryString)
-  def wrap(str: String): QT = pad.append(DefaultSyntax.Symbols.`(`).append(str).append(DefaultSyntax.Symbols.`)`)
+  def wrap(str: String): QT = pad.append(Symbols.`(`).append(str).append(Symbols.`)`)
   def wrap(query: QT): QT = wrap(query.queryString)
 
   def wrapn[T](list: T)(implicit ev1: T => TraversableOnce[String]): QT = wrapn(list.mkString(", "))
