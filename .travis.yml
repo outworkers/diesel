@@ -1,0 +1,28 @@
+language: scala
+scala:
+- 2.10.6
+- 2.11.8
+sudo: false
+notifications:
+  slack:
+  - websudos:P9QNXx1ZGFnDHp3v3jUqtB8k
+  email:
+  - dev@websudos.co.uk
+jdk:
+- oraclejdk7
+- openjdk7
+- oraclejdk8
+branches:
+  only:
+  - master
+  - develop
+env:
+  global:
+  - GH_REF: github.com/outworkers/diesel.git
+cache:
+  directories:
+  - $HOME/.ivy2/cache
+before_script: travis_retry sbt ++$TRAVIS_SCALA_VERSION update
+script: ./build/run_tests.sh
+after_success:
+- ./build/publish_develop.sh

@@ -1,4 +1,4 @@
-package com.outworkers.diesel.engine.reflection
+package com.outworkers.diesel.reflection
 
 import scala.reflect.runtime.universe.TypeTag
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}

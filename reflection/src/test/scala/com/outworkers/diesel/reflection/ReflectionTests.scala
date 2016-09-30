@@ -1,6 +1,5 @@
 package com.outworkers.diesel.reflection
 
-import com.outworkers.diesel.engine.reflection.EarlyInit
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.reflect.runtime.{currentMirror => cm}

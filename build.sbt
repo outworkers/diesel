@@ -43,7 +43,7 @@ lazy val noPublishSettings = Seq(
 
 val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
   organization := "com.outworkers",
-  version := "0.3.0",
+  version := "0.4.0",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8"),
   resolvers ++= Seq(
@@ -75,15 +75,52 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
 lazy val diesel = (project in file(".")).settings(
     sharedSettings ++ noPublishSettings
   ).aggregate(
-    engine
+    engine,
+    reflection,
+    macros
   )
 
 lazy val engine = (project in file("engine")).settings(
     moduleName := "diesel-engine",
     libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
       "org.scalatest" %% "scalatest" % Versions.scalatest,
       "org.scalacheck" %% "scalacheck" % "1.13.1" % Test,
       "com.storm-enroute" %% "scalameter" % Versions.scalaMeter % Test
     )
   ).settings(sharedSettings)
+
+lazy val reflection = (project in file("reflection"))
+  .settings(
+    moduleName := "diesel-reflection",
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      "org.scalatest" %% "scalatest" % Versions.scalatest
+    )
+  ).settings(
+    sharedSettings
+  ).dependsOn(
+    engine
+  )
+
+lazy val macros = (project in file("macros"))
+  .settings(
+    moduleName := "diesel-macros",
+    scalacOptions ++= Seq(
+      "-Ymacro-debug-verbose",
+      "-Yshow-trees-stringified"
+    ),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+    unmanagedSourceDirectories in Compile ++= Seq(
+      (sourceDirectory in Compile).value / ("scala-2." + {
+        CrossVersion.partialVersion(scalaBinaryVersion.value) match {
+          case Some((major, minor)) if minor == 11 => "11"
+          case Some((major, minor)) if minor == 12 => "12"
+          case _ => "10"
+        }
+      })),
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "macro-compat" % "1.1.1",
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      "org.scalatest" %% "scalatest" % Versions.scalatest
+    )
+  )

@@ -1,8 +1,7 @@
 package com.outworkers.diesel.engine.query
 
-/**
-  * Created by fsl-604 on 26/03/2016.
-  */
-class MergeListTest {
+import org.scalatest.{FlatSpec, Matchers}
+
+class MergeListTest extends FlatSpec with Matchers {
 
 }
