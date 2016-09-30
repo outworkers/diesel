@@ -72,7 +72,7 @@ then
         sbt +bintray:publish
 
         echo "Creating GPG deploy key"
-        openssl aes-256-cbc -K $encrypted_d543e1d8b539_key -iv $encrypted_d543e1d8b539_iv -in build/codesigning.asc.enc -out build/codesigning.asc -d
+        openssl aes-256-cbc -K $encrypted_c923ff7bc003_key -iv $encrypted_c923ff7bc003_iv -in build/deploy.asc.enc -out build/deploy.asc -d
 
         echo "importing GPG key to local GBP repo"
         gpg --fast-import build/codesigning.asc.enc
@@ -81,10 +81,13 @@ then
         export MAVEN_PUBLISH="true"
         export pgp_passphrase=${maven_password}
         sbt +publishSigned sonatypeReleaseAll
+        exit $?
 
     else
         echo "Only publishing version for Scala 2.11.8 and Oracle JDK 8 to prevent multiple artifacts"
+        exit 0
     fi
 else
     echo "This is either a pull request or the branch is not develop, deployment not necessary"
+    exit 0
 fi
