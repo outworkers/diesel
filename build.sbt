@@ -32,6 +32,7 @@ lazy val Versions = new {
   val scalaMeter = "0.7"
 }
 
+import com.twitter.sbt.{GitProject, VersionManagement}
 import sbt.Keys._
 import sbt._
 
@@ -43,7 +44,6 @@ lazy val noPublishSettings = Seq(
 
 val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
   organization := "com.outworkers",
-  version := "0.4.0",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8"),
   resolvers ++= Seq(
@@ -70,10 +70,15 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
   ),
   fork in Test := true,
   javaOptions in Test ++= Seq("-Xmx2G")
-) ++ Publishing.effectiveSettings
+) ++ VersionManagement.newSettings ++
+  GitProject.gitSettings ++ Publishing.effectiveSettings
 
 lazy val diesel = (project in file(".")).settings(
     sharedSettings ++ noPublishSettings
+  ).settings(
+    name := "diesel",
+    moduleName := "diesel",
+    pgpPassphrase := Publishing.pgpPass
   ).aggregate(
     engine,
     reflection,
@@ -113,9 +118,7 @@ lazy val macros = (project in file("macros"))
     unmanagedSourceDirectories in Compile ++= Seq(
       (sourceDirectory in Compile).value / ("scala-2." + {
         CrossVersion.partialVersion(scalaBinaryVersion.value) match {
-          case Some((major, minor)) if minor == 11 => "11"
-          case Some((major, minor)) if minor == 12 => "12"
-          case _ => "10"
+          case Some((major, minor)) => minor
         }
       })),
     libraryDependencies ++= Seq(

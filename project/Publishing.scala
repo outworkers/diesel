@@ -2,63 +2,13 @@ import bintray.BintrayPlugin.autoImport._
 import sbt.Keys._
 import sbt.{Credentials, Def, Path, ProjectReference, _}
 
+import scala.util.Properties
+import com.typesafe.sbt.pgp.PgpKeys._
+
 object Publishing {
-  val mavenSettings : Seq[Def.Setting[_]] = Seq(
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-    publishMavenStyle := true,
-    publishTo <<= version.apply {
-      v =>
-        val nexus = "https://oss.sonatype.org/"
-        if (v.trim.endsWith("SNAPSHOT")) {
-          Some("snapshots" at nexus + "content/repositories/snapshots")
-        }
-        else {
-          Some("releases" at nexus + "service/local/staging/deploy/maven2")
-        }
-    },
-    publishArtifact in Test := false,
-    pomIncludeRepository := { _ => true },
-    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0")),
-    pomExtra :=
-      <url>https://github.com/outworkers/diesel</url>
-        <scm>
-          <url>git@github.com:outworkers/diesel.git</url>
-          <connection>scm:git:git@github.com:outworkers/diesel.git</connection>
-        </scm>
-        <developers>
-          <developer>
-            <id>alexflav23</id>
-            <name>Flavian Alexandru</name>
-            <url>http://github.com/alexflav23</url>
-          </developer>
-        </developers>
-  )
 
-  val bintraySettings : Seq[Def.Setting[_]] = Seq(
-    publishMavenStyle := true,
-    bintrayReleaseOnPublish in ThisBuild := true,
-    bintrayOrganization := Some("websudos"),
-    bintrayRepository := "oss-releases",
-    publishArtifact in Test := false,
-    pomIncludeRepository := { _ => true},
-    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
-  )
-
-  def isJdk8: Boolean = sys.props("java.specification.version") == "1.8"
-
-  def addOnCondition(condition: Boolean, projectReference: ProjectReference): Seq[ProjectReference] =
-    if (condition) projectReference :: Nil else Nil
-
-  def jdk8Only(ref: ProjectReference): Seq[ProjectReference] = addOnCondition(isJdk8, ref)
-
-  def effectiveSettings: Seq[Def.Setting[_]] = {
-    if (sys.env.contains("MAVEN_PUBLISH")) mavenSettings else bintraySettings
-  }
-}
-
-object TravisEnv {
-  val RunningUnderCi = Option(System.getenv("CI")).isDefined || Option(System.getenv("TRAVIS")).isDefined
-  lazy val TravisScala211 = Option(System.getenv("TRAVIS_SCALA_VERSION")).exists(_.contains("2.11"))
+  val RunningUnderCi = sys.env.contains("CI") || sys.env.contains("TRAVIS")
+  lazy val TravisScala211 = sys.env.get("TRAVIS_SCALA_VERSION").exists(_.contains("2.11"))
 
   lazy val defaultCredentials: Seq[Credentials] = {
     if (!RunningUnderCi) {
@@ -88,5 +38,80 @@ object TravisEnv {
         )
       )
     }
+  }
+
+  val defaultPublishingSettings = Seq(
+    version := "0.4.0",
+    credentials ++= defaultCredentials
+  )
+
+  lazy val pgpPass = Properties.envOrNone("pgp_passphrase").map(_.toCharArray)
+
+  lazy val mavenSettings: Seq[Def.Setting[_]] = Seq(
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    publishMavenStyle := true,
+    pgpPassphrase in ThisBuild := {
+      if (RunningUnderCi && pgpPass.isDefined) {
+        println("Running under CI and PGP password specified under settings.")
+        println(s"Password longer than five characters: ${pgpPass.exists(_.length > 5)}")
+        pgpPass
+      } else {
+        println("Could not find settings for a PGP passphrase.")
+        println(s"pgpPass defined in environemnt: ${pgpPass.isDefined}")
+        println(s"Running under CI: $RunningUnderCi")
+        None
+      }
+    },
+    publishTo <<= version.apply {
+      v =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT")) {
+          Some("snapshots" at nexus + "content/repositories/snapshots")
+        } else {
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
+        }
+    },
+    externalResolvers <<= resolvers map { rs =>
+      Resolver.withDefaultResolvers(rs, mavenCentral = true)
+    },
+    licenses += ("Outworkers License", url("https://github.com/outworkers/phantom/blob/develop/LICENSE.txt")),
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => true },
+    pomExtra :=
+      <url>https://github.com/outworkers/phantom</url>
+        <scm>
+          <url>git@github.com:outworkers/phantom.git</url>
+          <connection>scm:git:git@github.com:outworkers/phantom.git</connection>
+        </scm>
+        <developers>
+          <developer>
+            <id>alexflav</id>
+            <name>Flavian Alexandru</name>
+            <url>http://github.com/alexflav23</url>
+          </developer>
+        </developers>
+  )
+
+
+  val bintraySettings : Seq[Def.Setting[_]] = Seq(
+    publishMavenStyle := true,
+    bintrayReleaseOnPublish in ThisBuild := true,
+    bintrayOrganization := Some("websudos"),
+    bintrayRepository := "oss-releases",
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => true},
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
+  )
+
+  def isJdk8: Boolean = sys.props("java.specification.version") == "1.8"
+
+  def addOnCondition(condition: Boolean, projectReference: ProjectReference): Seq[ProjectReference] =
+    if (condition) projectReference :: Nil else Nil
+
+  def jdk8Only(ref: ProjectReference): Seq[ProjectReference] = addOnCondition(isJdk8, ref)
+
+  def effectiveSettings: Seq[Def.Setting[_]] = {
+    val base = if (sys.env.contains("MAVEN_PUBLISH")) mavenSettings else bintraySettings
+    base ++ defaultPublishingSettings
   }
 }
