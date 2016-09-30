@@ -1,9 +1,9 @@
-package com.websudos.diesel.reflection
+package com.outworkers.diesel.reflection
 
-import com.websudos.diesel.engine.reflection.EarlyInit
+import com.outworkers.diesel.engine.reflection.EarlyInit
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.reflect.runtime.{ currentMirror => cm }
+import scala.reflect.runtime.{currentMirror => cm}
 
 class ColumnHolder[V] {
   lazy val name: String = {

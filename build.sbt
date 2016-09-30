@@ -1,11 +1,5 @@
-lazy val Versions = new {
-  val util = "0.16.0"
-  val scalaTest = "2.2.6"
-  val scalaMeter = "0.6"
-}
-
 /*
- * Copyright 2013-2015 Websudos, Limited.
+ * Copyright 2013-2015 Outworkers, Limited.
  *
  * All rights reserved.
  *
@@ -33,47 +27,13 @@ lazy val Versions = new {
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-import sbt.Keys._
-import sbt._
-
-val mavenPublishSettings : Seq[Def.Setting[_]] = Seq(
-  credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-  publishMavenStyle := true,
-  publishTo <<= version.apply {
-    v =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
-  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0")),
-  publishArtifact in Test := false,
-  pomIncludeRepository := { _ => true },
-  pomExtra :=
-    <url>https://github.com/websudos/phantom</url>
-      <scm>
-        <url>git@github.com:websudos/phantom.git</url>
-        <connection>scm:git:git@github.com:websudos/phantom.git</connection>
-      </scm>
-      <developers>
-        <developer>
-          <id>alexflav</id>
-          <name>Flavian Alexandru</name>
-          <url>http://github.com/alexflav23</url>
-        </developer>
-      </developers>
-)
-
-def liftVersion(scalaVersion: String): String = {
-  scalaVersion match {
-    case "2.10.5" => "3.0-M1"
-    case _ => "3.0-M2"
-  }
+lazy val Versions = new {
+  val scalatest = "2.2.6"
+  val scalaMeter = "0.7"
 }
 
-val PerformanceTest = config("perf").extend(Test)
-def performanceFilter(name: String): Boolean = name endsWith "PerformanceTest"
+import sbt.Keys._
+import sbt._
 
 lazy val noPublishSettings = Seq(
   publish := (),
@@ -81,21 +41,11 @@ lazy val noPublishSettings = Seq(
   publishArtifact := false
 )
 
-val publishSettings: Seq[Def.Setting[_]] = Seq(
-  publishMavenStyle := true,
-  bintrayOrganization := Some("websudos"),
-  bintrayRepository := "oss-releases",
-  bintrayReleaseOnPublish := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository := { _ => true},
-  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
-)
-
 val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
-  organization := "com.websudos",
+  organization := "com.outworkers",
   version := "0.3.0",
-  scalaVersion := "2.10.6",
-  crossScalaVersions := Seq("2.10.6", "2.11.7"),
+  scalaVersion := "2.11.8",
+  crossScalaVersions := Seq("2.10.6", "2.11.8"),
   resolvers ++= Seq(
     "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
     "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/",
@@ -120,8 +70,7 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
   ),
   fork in Test := true,
   javaOptions in Test ++= Seq("-Xmx2G")
-) ++ publishSettings
-
+) ++ Publishing.effectiveSettings
 
 lazy val diesel = (project in file(".")).settings(
     sharedSettings ++ noPublishSettings
@@ -133,8 +82,8 @@ lazy val engine = (project in file("engine")).settings(
     moduleName := "diesel-engine",
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scalacheck" %% "scalacheck" % "1.13.1" % "test",
-      "com.websudos" %% "util-testing" % Versions.util % "test",
-      "com.storm-enroute" %% "scalameter" % Versions.scalaMeter % "test"
+      "org.scalatest" %% "scalatest" % Versions.scalatest,
+      "org.scalacheck" %% "scalacheck" % "1.13.1" % Test,
+      "com.storm-enroute" %% "scalameter" % Versions.scalaMeter % Test
     )
   ).settings(sharedSettings)

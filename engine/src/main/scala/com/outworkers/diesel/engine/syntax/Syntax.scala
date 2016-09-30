@@ -1,4 +1,4 @@
-package com.websudos.diesel.engine.syntax
+package com.outworkers.diesel.engine.syntax
 
 sealed abstract class Symbols {
   val `*` = "*"

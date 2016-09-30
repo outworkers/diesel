@@ -1,4 +1,4 @@
-package com.websudos.diesel.engine.query
+package com.outworkers.diesel.engine.query
 
 import org.scalatest.{FlatSpec, Matchers}
 

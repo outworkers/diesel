@@ -1,14 +1,11 @@
-package com.websudos.diesel.engine.reflection
+package com.outworkers.diesel.engine.reflection
 
-import scala.collection.mutable.{ArrayBuffer => MutableArrayBuffer}
 import scala.reflect.runtime.universe.TypeTag
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 
 private object Lock
 
 trait EarlyInit[T] {
-
-  protected[this] lazy val _collection: MutableArrayBuffer[T] = new MutableArrayBuffer[T]
 
   private[this] val instanceMirror = cm.reflect(this)
 
@@ -24,12 +21,12 @@ trait EarlyInit[T] {
 
       for {
         symbol <- members.distinct
-        table = if (symbol.isModule) {
+        field = if (symbol.isModule) {
           instanceMirror.reflectModule(symbol.asModule).instance
         } else if (symbol.isTerm && symbol.asTerm.isVal) {
           instanceMirror.reflectField(symbol.asTerm).get
         }
-      } yield table.asInstanceOf[T]
+      } yield field.asInstanceOf[T]
     }
   }
 }
