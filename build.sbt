@@ -56,7 +56,7 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
     Resolver.bintrayRepo("websudos", "oss-releases")
   ),
-  scalacOptions ++= Seq(
+  scalacOptions in ThisBuild ++= Seq(
     "-language:postfixOps",
     "-language:implicitConversions",
     "-language:reflectiveCalls",
@@ -123,4 +123,8 @@ lazy val macros = (project in file("macros"))
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
       "org.scalatest" %% "scalatest" % Versions.scalatest
     )
+  ).settings(
+    sharedSettings
+  ).dependsOn(
+    engine
   )
