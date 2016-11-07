@@ -9,6 +9,8 @@ object Publishing {
 
   val runningUnderCi = sys.env.contains("CI") || sys.env.contains("TRAVIS")
 
+  val salt = "]hE`5jpDHp_9d$)["
+
   lazy val defaultCredentials: Seq[Credentials] = {
     if (!runningUnderCi) {
       Seq(
