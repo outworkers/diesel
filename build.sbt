@@ -28,8 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 lazy val Versions = new {
-  val scalatest = "2.2.6"
-  val scalaMeter = "0.7"
+  val scalatest = "3.0.0"
+  val scalaMeter = "0.8.+"
 }
 
 import com.twitter.sbt.{GitProject, VersionManagement}
@@ -45,7 +45,7 @@ lazy val noPublishSettings = Seq(
 val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
   organization := "com.outworkers",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8"),
+  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0"),
   resolvers ++= Seq(
     "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
     "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/",
@@ -62,7 +62,7 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
     "-language:reflectiveCalls",
     "-language:higherKinds",
     "-language:existentials",
-    "-Yinline-warnings",
+    //"-Yinline-warnings",
     "-Xlint",
     "-deprecation",
     "-feature",
@@ -89,7 +89,7 @@ lazy val engine = (project in file("engine")).settings(
     moduleName := "diesel-engine",
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % Versions.scalatest,
-      "org.scalacheck" %% "scalacheck" % "1.13.1" % Test,
+      "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
       "com.storm-enroute" %% "scalameter" % Versions.scalaMeter % Test
     )
   ).settings(sharedSettings)
