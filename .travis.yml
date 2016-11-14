@@ -18,21 +18,17 @@ branches:
   - develop
 
 env:
-  matrix:   # scala 2.12 requires java 8   exclude:
+  - JDK=oraclejdk8
+  - JDK=oraclejdk7
+  - JDK=openjdk7
+  matrix:
+  # scala 2.12 requires java 8
+  exclude:
     - scala: 2.12.0
-      env: JDK=oraclejdk8
-    - scala: 2.11.8
-      env: JDK=openjdk7
-    - scala: 2.11.8
       env: JDK=oraclejdk7
-    - scala: 2.11.8
-      env: JDK=oraclejdk8
-    - scala: 2.10.6
+    - scala: 2.12.0
       env: JDK=openjdk7
-    - scala: 2.10.6
-      env: JDK=oraclejdk7
-    - scala: 2.10.6
-      env: JDK=oraclejdk8
+
   global:
   - GH_REF: github.com/outworkers/diesel.git
   - secure: lfylvCgZoY/rqfLhheKAxZRWHJyDFqV48KNS9xo8LZn6kMD0KGW7uXCIlzfUmt8V3SZaMriySA6aVGfbj+QPzFA3XARZUs1qQMjw+9/WGI21htrF6w8PRK3Sln4qAsshiVjGXYNqMiJr7PbDbtKA2iL815QAptSu/kODBvVW5Lul0KdsPtUVQhYVeVvzkHXnwuH/C9ah6qe0zyvtdfpUm2UeVqSCSNGcnkPBSYHpy+uYxN+tNXJImDD/xGCj7VO8mJRDTaAko0Wn9BGgDCc3s5oJ3CFbdOT6BN8UoNRbQ7CnJJlTjruHFYIt55hapy0f04DBk2F5xMatZBRdpqnMb58aMtyckqOMIiCiWdiir8G/iSwZp3c3Y07GlR6ynzny0pK7znqCZPoGt4ULDO+Mgn8ledBV0FV5gaATsqZbhlw2mI/bng8AUZe8GxasKXXz5aALuRZJKHTdrIZvvEODbRD3GivQj3+9V0E4+xkHE2WUJD2b3Uz0DXRM41VTeM4OEoTL70ZPNTf4SuhzSpKgjynqMRTSLDxW9ai+IVLZc9QDa6lu5yz0Ty1zXObMA/MrFP1IYwgdZBnrUeHXL6DuoPP18SEprogher46fOgaDtpqox3tagOdEXB8fTPyXaoohJaz+Abw3azGF4q45nRyNdancNe1+0S/Ik3rC7NRSmc=
