@@ -54,7 +54,7 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
     "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
     "Sonatype staging" at "http://oss.sonatype.org/content/repositories/staging",
     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
-    Resolver.bintrayRepo("websudos", "oss-releases")
+    Resolver.bintrayRepo("outworkers", "oss-releases")
   ),
   scalacOptions in ThisBuild ++= Seq(
     "-language:postfixOps",

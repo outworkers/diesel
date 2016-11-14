@@ -96,7 +96,7 @@ object Publishing {
   val bintraySettings : Seq[Def.Setting[_]] = Seq(
     publishMavenStyle := true,
     bintrayReleaseOnPublish in ThisBuild := true,
-    bintrayOrganization := Some("websudos"),
+    bintrayOrganization := Some("outworkers"),
     bintrayRepository := "oss-releases",
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => true},
