@@ -77,8 +77,7 @@ lazy val diesel = (project in file(".")).settings(
     sharedSettings ++ noPublishSettings
   ).settings(
     name := "diesel",
-    moduleName := "diesel",
-    pgpPassphrase := Publishing.pgpPass
+    moduleName := "diesel"
   ).aggregate(
     engine,
     reflection,
