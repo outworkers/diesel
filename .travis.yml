@@ -31,16 +31,25 @@ env:
       jdk: oraclejdk8
     - scala: 2.12.0
       jdk: openjdk8
-cache:
-  directories:
-  - "$HOME/.ivy2/cache"
 
 before_script:
   - travis_retry sbt ++$TRAVIS_SCALA_VERSION update
 
+cache:
+  directories:
+  - $HOME/.sbt/0.13/dependency
+  - $HOME/.sbt/boot/scala*
+  - $HOME/.sbt/launchers
+  - $HOME/.ivy2/cache
+  - $HOME/.nvm
+
+before_cache:
+  - du -h -d 1 $HOME/.ivy2/cache
+  - du -h -d 2 $HOME/.sbt/
+  - find $HOME/.sbt -name "*.lock" -type f -delete
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
+  
 script: "./build/run_tests.sh"
 
 after_success:
 - "./build/publish_develop.sh"
-dd:
-  secure: I2bJN+z8hUbwMV8nzfmQDSrHslbrN1suVlrUEJpnUK27L6sinr4L3EaPnN71ujp4YiYieGBZQuEySU7GBdfRTRsM7J14mDJ5mOQwMrPNvBQnPzqyV6MYrTKKWthIYWna7KPLnNXHbVIba1SOBBd87yJO3mHFQnIvQelCjiXreYSpGp9Rrfp2tBiHfHN4PbNKN6A1c9JMzx9nVAis/0BTj1TfDzVEqHqHh5qYsOrAJo7+Y/LyxmBf0j/83i+2odMdWTj8xTb6NRlvhc0Opf/Z5m+4TnzNDrn+6OlSb/NRti2IBGtKCqdU0sfmDGHYreFc1fu96G+Q/RzAHlXT1WAyxKG0B1EXlGOZCgu8wcXe/rMQo0X2+AG+O7dD753sC71PmAjjGU8HC1IP9ZEApbgCQ9j5FR+ncFQk7gCKm5j+98C2WlsceYiiFFFtPgkBfxINTGk+xc20RlupmUoUP0zj/Qz1Lp3dtio7WgP2qp97aZBjnebE6+v94u1uygN+wGJiCtMOB+KdPcFlR7p55L1ezw2+MiRR/nkyRFO0U05pdRysDLpPKYSFFToTwvV9cuPBcmhGmcWg6XHubGgu01kB2MEbJglyoY2+NYJg7zDRzR916XZ1xzL9useytm4rN8kxYCoBK5avnUZy0ELTxQH1Qj30BfSp/ZU2W3zXVeNVmoA=
