@@ -18,10 +18,10 @@ branches:
   - develop
 
 env:
-  - JDK=oraclejdk8
-  - JDK=oraclejdk7
-  - JDK=openjdk7
   matrix:
+    - JDK=oraclejdk8
+    - JDK=oraclejdk7
+    - JDK=openjdk7
   # scala 2.12 requires java 8
   exclude:
     - scala: 2.12.0
