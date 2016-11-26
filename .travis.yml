@@ -32,12 +32,11 @@ env:
       - openjdk8
       - oraclejdk7
       - openjdk7
-    exclude:
-    - scala: 2.12.0
-      JDK: oraclejdk7
-    - scala: 2.12.0
-      JDK: openjdk7
-
+    - exclude:
+      - scala: 2.12.0
+        JDK: oraclejdk7
+      - scala: 2.12.0
+        JDK: openjdk7
 cache:
   directories:
   - "$HOME/.ivy2/cache"
