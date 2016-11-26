@@ -114,12 +114,6 @@ lazy val macros = (project in file("macros"))
       "-Yshow-trees-stringified"
     ),
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-    unmanagedSourceDirectories in Compile ++= Seq(
-      (sourceDirectory in Compile).value / ("scala-2." + {
-        CrossVersion.partialVersion(scalaBinaryVersion.value) match {
-          case Some((major, minor)) => minor
-        }
-      })),
     libraryDependencies ++= Seq(
       "org.typelevel" %% "macro-compat" % "1.1.1",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",

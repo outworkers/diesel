@@ -2,9 +2,6 @@ import bintray.BintrayPlugin.autoImport._
 import sbt.Keys._
 import sbt.{Credentials, Def, Path, ProjectReference, _}
 
-import scala.util.Properties
-import com.typesafe.sbt.pgp.PgpKeys._
-
 object Publishing {
 
   val runningUnderCi = sys.env.contains("CI") || sys.env.contains("TRAVIS")
