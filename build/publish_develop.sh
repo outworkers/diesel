@@ -2,7 +2,7 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "develop" ];
 then
 
-    if [ "${TRAVIS_SCALA_VERSION}" == "2.11.8" ] && [ "${TRAVIS_JDK_VERSION}" == "oraclejdk8" ];
+    if [ "${TRAVIS_SCALA_VERSION}" == "2.12.0" ] && [ "${TRAVIS_JDK_VERSION}" == "oraclejdk8" ];
     then
 
         echo "Setting git user email to ci@outworkers.com"
@@ -71,21 +71,10 @@ then
         echo "Publishing new version to bintray"
         sbt +bintray:publish
 
-        echo "Creating GPG deploy key"
-        openssl aes-256-cbc -K $encrypted_c923ff7bc003_key -iv $encrypted_c923ff7bc003_iv -in build/deploy.asc.enc -out build/deploy.asc -d
-
-        echo "importing GPG key to local GBP repo"
-        gpg --fast-import build/deploy.asc.enc
-        gpg --list-keys
-
-        echo "Setting MAVEN_PUBLISH mode to true"
-        export MAVEN_PUBLISH="true"
-        export pgp_passphrase=${maven_password}
-        sbt +publishSigned sonatypeReleaseAll
         exit $?
 
     else
-        echo "Only publishing version for Scala 2.11.8 and Oracle JDK 8 to prevent multiple artifacts"
+        echo "Only publishing version for Scala 2.12.0 and Oracle JDK 8 to prevent multiple artifacts"
         exit 0
     fi
 else

@@ -54,7 +54,7 @@ val sharedSettings: Seq[Def.Setting[_]] = Defaults.coreDefaultSettings ++ Seq(
     "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
     "Sonatype staging" at "http://oss.sonatype.org/content/repositories/staging",
     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
-    Resolver.bintrayRepo("websudos", "oss-releases")
+    Resolver.bintrayRepo("outworkers", "oss-releases")
   ),
   scalacOptions in ThisBuild ++= Seq(
     "-language:postfixOps",
@@ -88,7 +88,7 @@ lazy val diesel = (project in file(".")).settings(
 lazy val engine = (project in file("engine")).settings(
     moduleName := "diesel-engine",
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % Versions.scalatest,
+      "org.scalatest" %% "scalatest" % Versions.scalatest % Test,
       "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
       "com.storm-enroute" %% "scalameter" % Versions.scalaMeter % Test
     )
@@ -99,7 +99,7 @@ lazy val reflection = (project in file("reflection"))
     moduleName := "diesel-reflection",
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scalatest" %% "scalatest" % Versions.scalatest
+      "org.scalatest" %% "scalatest" % Versions.scalatest % Test
     )
   ).settings(
     sharedSettings
@@ -124,7 +124,7 @@ lazy val macros = (project in file("macros"))
     libraryDependencies ++= Seq(
       "org.typelevel" %% "macro-compat" % "1.1.1",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      "org.scalatest" %% "scalatest" % Versions.scalatest
+      "org.scalatest" %% "scalatest" % Versions.scalatest % Test
     )
   ).settings(
     sharedSettings
