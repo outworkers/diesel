@@ -17,6 +17,13 @@ branches:
   - master
   - develop
 
+matrix:
+  include:
+  - scala: 2.12.0
+    jdk: oraclejdk8
+  - scala: 2.12.0
+    jdk: openjdk8
+      
 env:
   global:
   - GH_REF: github.com/outworkers/diesel.git
@@ -25,12 +32,7 @@ env:
   - secure: fpsCdaJc3Aa543A3a3HsuZpBhsTtsqK4ANnxtczOe9XbLtDobPEMOkD+u7Fh7CgxfcdflZcbYNysyqRcNBZNAZ2Ndr5NKxump5QfMVnuA185mBG9F6G6qahpMZNJ81WAdU/VXV6FAdoIOVXGqMD+YKb44/3X3eZvyLN1AzRmPRye5GBWzwFwXlkPWBpmWy39qaQBj1nmQyGhfRg/e/o3BFvqMXGZv7nfbuViZ5An8/9m0bd7I0OQRfZnmsCsSiyuTmt/88jh3ckJ3X0QSnBtdB1Ok/GGUWzyFo6YtXfa5ewpmSUbWgdYFleXVBt39LA+dD0sLDPgEvw/yPwFXHQVC1aSF4beGNRCaz9zcBDQI5gfGw8ZdpmSjnHPdTemmwQ+EL9T/3xDfPm6yncZT96frFTtvkWWA8aKMOnLYXXO2vDtnlBfyST/s2RLcCfvXkP4U66uyTVw8CTkDny/6LYYJ8rPSObkFVfYKH5uGj6QJ2AXtYWJDNI4hwIrvlaIb7+YtwwYpxq8M1i+/Qq87cyI9FFgCFrEVfK95WdZYedgm5x4qycXdmVoCI6oddNVcwhsqG925P/XussRuErvUXsY9bbdAsF4ef7WaEK1Ds+9OIvn6/hfOy/Y2kdnYdnuzaQsMZR3C+KOJdpYKv5AqCmgbIQmuKjTBCNEvD41VWfcwRE=
   - secure: vpRG9zCAXG9C/2fqk9QjxpwNOPFCeM+gXc9sPYUaHm/4ODBuhRrhcW7R+6lo8Et1XFGFpCZRxHvqK6AL6xRqWet1A90IC030i1VNIKgax0P8IZYnTy5NgmReLM5TCRC8X0aXlx9c+HPypKUrOaYVJnB4PmP3Nfs+hZd/C37917VXzBYOPE91xeQOAECYubvlfRxbkMMFHT9/UAroljUWISE1sFgZSepOCqDd8IAYYRaNVIwKnVVoHzYDf2Ehf91yaE48FYvHm6oUsVNQhsvWiESEpZmWwRTepSc2ceJ+8gtwL1I4sUToB2k/E6KzwDZMKjYKFDgugdtanysm1Fw6AyWfwDrfQJjEYoisgNzcX5vm/ovPVqxy/7pRVhTohHhT1M1X8okJnAb8AmptP3rqUNZV/dFeieb5Xg8FqTWYCOGr+WHHMjnMLlZNhm7cMSgYkXQdnEPI3EQrN+eggetkIip5KD8FNfMvUDt8w4T8obk/d8vP1cgJ7PpQDrdO48pOayj9Sn8VeG13SgueKKAZ30IiCo3usdMPxp9K5q8360kiulDTsQB0qtIw0W/KCJlfrZWQ7+W4sw6FVdy4gpDR2U+6QHlgJ9jy0fQiJA1sen10eBlYtZhfk6b+YL2tJKFoDNc4tvGSQlEg3Hlso1jq3uRf54zNAvvxkmroXkfAuaw=
 
-  matrix:
-    include:
-    - scala: 2.12.0
-      jdk: oraclejdk8
-    - scala: 2.12.0
-      jdk: openjdk8
+
 
 before_script:
   - travis_retry sbt ++$TRAVIS_SCALA_VERSION update
@@ -48,7 +50,7 @@ before_cache:
   - du -h -d 2 $HOME/.sbt/
   - find $HOME/.sbt -name "*.lock" -type f -delete
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
-  
+
 script: "./build/run_tests.sh"
 
 after_success:
