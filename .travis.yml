@@ -27,12 +27,12 @@ env:
   - secure: vpRG9zCAXG9C/2fqk9QjxpwNOPFCeM+gXc9sPYUaHm/4ODBuhRrhcW7R+6lo8Et1XFGFpCZRxHvqK6AL6xRqWet1A90IC030i1VNIKgax0P8IZYnTy5NgmReLM5TCRC8X0aXlx9c+HPypKUrOaYVJnB4PmP3Nfs+hZd/C37917VXzBYOPE91xeQOAECYubvlfRxbkMMFHT9/UAroljUWISE1sFgZSepOCqDd8IAYYRaNVIwKnVVoHzYDf2Ehf91yaE48FYvHm6oUsVNQhsvWiESEpZmWwRTepSc2ceJ+8gtwL1I4sUToB2k/E6KzwDZMKjYKFDgugdtanysm1Fw6AyWfwDrfQJjEYoisgNzcX5vm/ovPVqxy/7pRVhTohHhT1M1X8okJnAb8AmptP3rqUNZV/dFeieb5Xg8FqTWYCOGr+WHHMjnMLlZNhm7cMSgYkXQdnEPI3EQrN+eggetkIip5KD8FNfMvUDt8w4T8obk/d8vP1cgJ7PpQDrdO48pOayj9Sn8VeG13SgueKKAZ30IiCo3usdMPxp9K5q8360kiulDTsQB0qtIw0W/KCJlfrZWQ7+W4sw6FVdy4gpDR2U+6QHlgJ9jy0fQiJA1sen10eBlYtZhfk6b+YL2tJKFoDNc4tvGSQlEg3Hlso1jq3uRf54zNAvvxkmroXkfAuaw=
 
   matrix:
-    - JDK:
+    JDK:
       - oraclejdk8
       - openjdk8
       - oraclejdk7
       - openjdk7
-    - exclude:
+    exclude:
       - scala: 2.12.0
         JDK: oraclejdk7
       - scala: 2.12.0
