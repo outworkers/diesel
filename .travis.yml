@@ -1,10 +1,15 @@
 language: scala
+
 scala:
 - 2.10.6
 - 2.11.8
-- 2.12.0
-
 sudo: false
+
+
+jdk:
+  - openjdk7 
+  - oraclejdk7
+  - oraclejdk8
 
 notifications:
   slack:
@@ -17,17 +22,12 @@ branches:
   - master
   - develop
 
-env:
-  matrix:
-    - JDK=oraclejdk8
-    - JDK=oraclejdk7
-    - JDK=openjdk7
-  exclude:
-    - scala: 2.12.0
-      env: JDK=oraclejdk7
-    - scala: 2.12.0
-      env: JDK=openjdk7
+matrix:
+  include:
+  - scala: 2.12.0
+    jdk: oraclejdk8
 
+env:
   global:
   - GH_REF: github.com/outworkers/diesel.git
   - secure: lfylvCgZoY/rqfLhheKAxZRWHJyDFqV48KNS9xo8LZn6kMD0KGW7uXCIlzfUmt8V3SZaMriySA6aVGfbj+QPzFA3XARZUs1qQMjw+9/WGI21htrF6w8PRK3Sln4qAsshiVjGXYNqMiJr7PbDbtKA2iL815QAptSu/kODBvVW5Lul0KdsPtUVQhYVeVvzkHXnwuH/C9ah6qe0zyvtdfpUm2UeVqSCSNGcnkPBSYHpy+uYxN+tNXJImDD/xGCj7VO8mJRDTaAko0Wn9BGgDCc3s5oJ3CFbdOT6BN8UoNRbQ7CnJJlTjruHFYIt55hapy0f04DBk2F5xMatZBRdpqnMb58aMtyckqOMIiCiWdiir8G/iSwZp3c3Y07GlR6ynzny0pK7znqCZPoGt4ULDO+Mgn8ledBV0FV5gaATsqZbhlw2mI/bng8AUZe8GxasKXXz5aALuRZJKHTdrIZvvEODbRD3GivQj3+9V0E4+xkHE2WUJD2b3Uz0DXRM41VTeM4OEoTL70ZPNTf4SuhzSpKgjynqMRTSLDxW9ai+IVLZc9QDa6lu5yz0Ty1zXObMA/MrFP1IYwgdZBnrUeHXL6DuoPP18SEprogher46fOgaDtpqox3tagOdEXB8fTPyXaoohJaz+Abw3azGF4q45nRyNdancNe1+0S/Ik3rC7NRSmc=
@@ -35,17 +35,25 @@ env:
   - secure: fpsCdaJc3Aa543A3a3HsuZpBhsTtsqK4ANnxtczOe9XbLtDobPEMOkD+u7Fh7CgxfcdflZcbYNysyqRcNBZNAZ2Ndr5NKxump5QfMVnuA185mBG9F6G6qahpMZNJ81WAdU/VXV6FAdoIOVXGqMD+YKb44/3X3eZvyLN1AzRmPRye5GBWzwFwXlkPWBpmWy39qaQBj1nmQyGhfRg/e/o3BFvqMXGZv7nfbuViZ5An8/9m0bd7I0OQRfZnmsCsSiyuTmt/88jh3ckJ3X0QSnBtdB1Ok/GGUWzyFo6YtXfa5ewpmSUbWgdYFleXVBt39LA+dD0sLDPgEvw/yPwFXHQVC1aSF4beGNRCaz9zcBDQI5gfGw8ZdpmSjnHPdTemmwQ+EL9T/3xDfPm6yncZT96frFTtvkWWA8aKMOnLYXXO2vDtnlBfyST/s2RLcCfvXkP4U66uyTVw8CTkDny/6LYYJ8rPSObkFVfYKH5uGj6QJ2AXtYWJDNI4hwIrvlaIb7+YtwwYpxq8M1i+/Qq87cyI9FFgCFrEVfK95WdZYedgm5x4qycXdmVoCI6oddNVcwhsqG925P/XussRuErvUXsY9bbdAsF4ef7WaEK1Ds+9OIvn6/hfOy/Y2kdnYdnuzaQsMZR3C+KOJdpYKv5AqCmgbIQmuKjTBCNEvD41VWfcwRE=
   - secure: vpRG9zCAXG9C/2fqk9QjxpwNOPFCeM+gXc9sPYUaHm/4ODBuhRrhcW7R+6lo8Et1XFGFpCZRxHvqK6AL6xRqWet1A90IC030i1VNIKgax0P8IZYnTy5NgmReLM5TCRC8X0aXlx9c+HPypKUrOaYVJnB4PmP3Nfs+hZd/C37917VXzBYOPE91xeQOAECYubvlfRxbkMMFHT9/UAroljUWISE1sFgZSepOCqDd8IAYYRaNVIwKnVVoHzYDf2Ehf91yaE48FYvHm6oUsVNQhsvWiESEpZmWwRTepSc2ceJ+8gtwL1I4sUToB2k/E6KzwDZMKjYKFDgugdtanysm1Fw6AyWfwDrfQJjEYoisgNzcX5vm/ovPVqxy/7pRVhTohHhT1M1X8okJnAb8AmptP3rqUNZV/dFeieb5Xg8FqTWYCOGr+WHHMjnMLlZNhm7cMSgYkXQdnEPI3EQrN+eggetkIip5KD8FNfMvUDt8w4T8obk/d8vP1cgJ7PpQDrdO48pOayj9Sn8VeG13SgueKKAZ30IiCo3usdMPxp9K5q8360kiulDTsQB0qtIw0W/KCJlfrZWQ7+W4sw6FVdy4gpDR2U+6QHlgJ9jy0fQiJA1sen10eBlYtZhfk6b+YL2tJKFoDNc4tvGSQlEg3Hlso1jq3uRf54zNAvvxkmroXkfAuaw=
 
-cache:
-  directories:
-  - "$HOME/.ivy2/cache"
 
 before_script:
-  - jdk_switcher use $JDK
   - travis_retry sbt ++$TRAVIS_SCALA_VERSION update
+
+cache:
+  directories:
+  - $HOME/.sbt/0.13/dependency
+  - $HOME/.sbt/boot/scala*
+  - $HOME/.sbt/launchers
+  - $HOME/.ivy2/cache
+  - $HOME/.nvm
+
+before_cache:
+  - du -h -d 1 $HOME/.ivy2/cache
+  - du -h -d 2 $HOME/.sbt/
+  - find $HOME/.sbt -name "*.lock" -type f -delete
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
 
 script: "./build/run_tests.sh"
 
 after_success:
 - "./build/publish_develop.sh"
-dd:
-  secure: I2bJN+z8hUbwMV8nzfmQDSrHslbrN1suVlrUEJpnUK27L6sinr4L3EaPnN71ujp4YiYieGBZQuEySU7GBdfRTRsM7J14mDJ5mOQwMrPNvBQnPzqyV6MYrTKKWthIYWna7KPLnNXHbVIba1SOBBd87yJO3mHFQnIvQelCjiXreYSpGp9Rrfp2tBiHfHN4PbNKN6A1c9JMzx9nVAis/0BTj1TfDzVEqHqHh5qYsOrAJo7+Y/LyxmBf0j/83i+2odMdWTj8xTb6NRlvhc0Opf/Z5m+4TnzNDrn+6OlSb/NRti2IBGtKCqdU0sfmDGHYreFc1fu96G+Q/RzAHlXT1WAyxKG0B1EXlGOZCgu8wcXe/rMQo0X2+AG+O7dD753sC71PmAjjGU8HC1IP9ZEApbgCQ9j5FR+ncFQk7gCKm5j+98C2WlsceYiiFFFtPgkBfxINTGk+xc20RlupmUoUP0zj/Qz1Lp3dtio7WgP2qp97aZBjnebE6+v94u1uygN+wGJiCtMOB+KdPcFlR7p55L1ezw2+MiRR/nkyRFO0U05pdRysDLpPKYSFFToTwvV9cuPBcmhGmcWg6XHubGgu01kB2MEbJglyoY2+NYJg7zDRzR916XZ1xzL9useytm4rN8kxYCoBK5avnUZy0ELTxQH1Qj30BfSp/ZU2W3zXVeNVmoA=
