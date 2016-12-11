@@ -9,8 +9,6 @@ object Publishing {
 
   val runningUnderCi = sys.env.contains("CI") || sys.env.contains("TRAVIS")
 
-  val salt = "]hE`5jpDHp_9d$)["
-
   lazy val defaultCredentials: Seq[Credentials] = {
     if (!runningUnderCi) {
       Seq(
@@ -42,7 +40,7 @@ object Publishing {
   }
 
   val defaultPublishingSettings = Seq(
-    version := "0.4.1",
+    version := "0.5.0",
     credentials ++= defaultCredentials
   )
 
