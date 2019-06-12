@@ -2,6 +2,9 @@ import bintray.BintrayPlugin.autoImport._
 import sbt.Keys._
 import sbt.{Credentials, Def, Path, ProjectReference, _}
 
+import scala.util.Properties
+import com.typesafe.sbt.pgp.PgpKeys._
+
 object Publishing {
 
   val runningUnderCi = sys.env.contains("CI") || sys.env.contains("TRAVIS")
@@ -19,6 +22,18 @@ object Publishing {
           host = "dl.bintray.com",
           userName = System.getenv("bintray_user"),
           passwd = System.getenv("bintray_password")
+        ),
+        Credentials(
+          realm = "Sonatype OSS Repository Manager",
+          host = "oss.sonatype.org",
+          userName = System.getenv("maven_user"),
+          passwd = System.getenv("maven_password")
+        ),
+        Credentials(
+          realm = "Bintray API Realm",
+          host = "api.bintray.com",
+          userName = System.getenv("bintray_user"),
+          passwd = System.getenv("bintray_password")
         )
       )
     }
@@ -27,6 +42,53 @@ object Publishing {
   val defaultPublishingSettings = Seq(
     version := "0.5.0",
     credentials ++= defaultCredentials
+  )
+
+  lazy val pgpPass = Properties.envOrNone("pgp_passphrase").map(_.toCharArray)
+
+  lazy val mavenSettings: Seq[Def.Setting[_]] = Seq(
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    publishMavenStyle := true,
+    pgpPassphrase in ThisBuild := {
+      if (runningUnderCi && pgpPass.isDefined) {
+        println("Running under CI and PGP password specified under settings.")
+        println(s"Password longer than five characters: ${pgpPass.exists(_.length > 5)}")
+        pgpPass
+      } else {
+        println("Could not find settings for a PGP passphrase.")
+        println(s"pgpPass defined in environemnt: ${pgpPass.isDefined}")
+        println(s"Running under CI: $runningUnderCi")
+        None
+      }
+    },
+    publishTo <<= version.apply {
+      v =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT")) {
+          Some("snapshots" at nexus + "content/repositories/snapshots")
+        } else {
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
+        }
+    },
+    externalResolvers <<= resolvers map { rs =>
+      Resolver.withDefaultResolvers(rs, mavenCentral = true)
+    },
+    licenses += ("Outworkers License", url("https://github.com/outworkers/diesel/blob/develop/LICENSE.txt")),
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => true },
+    pomExtra :=
+      <url>https://github.com/outworkers/diesel</url>
+        <scm>
+          <url>git@github.com:outworkers/diesel.git</url>
+          <connection>scm:git:git@github.com:outworkers/diesel.git</connection>
+        </scm>
+        <developers>
+          <developer>
+            <id>alexflav</id>
+            <name>Flavian Alexandru</name>
+            <url>http://github.com/alexflav23</url>
+          </developer>
+        </developers>
   )
 
   val bintraySettings : Seq[Def.Setting[_]] = Seq(
@@ -46,5 +108,8 @@ object Publishing {
 
   def jdk8Only(ref: ProjectReference): Seq[ProjectReference] = addOnCondition(isJdk8, ref)
 
-  def effectiveSettings: Seq[Def.Setting[_]] = bintraySettings ++ defaultPublishingSettings
+  def effectiveSettings: Seq[Def.Setting[_]] = {
+    val base = if (!sys.env.contains("MAVEN_PUBLISH")) mavenSettings else bintraySettings
+    base ++ defaultPublishingSettings
+  }
 }
